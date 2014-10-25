@@ -8,15 +8,18 @@ public abstract class Media {
 	protected String name;
 	protected String path;
 	protected String filename;
+	protected String foldername;
+	protected String absPath;
 	
-	public Media(int id, String name, String path, String filename) {
+	public Media(String name, String path, String filename,
+			String foldername, String absPath) {
 		super();
-		this.id = id;
+		this.id = ctr++;
 		this.name = name;
 		this.path = path;
 		this.filename = filename;
+		this.foldername = foldername;
+		this.absPath = absPath;
 	}
-	
-	
 	
 }
