@@ -4,21 +4,24 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import mc.event.a2g.RootEventA2G;
 import mc.event.a2g.RootEventA2G.EventTypeA2G;
+import mc.event.g2c.RootEventG2C;
 import mc.utils.Logger;
 
 public class GuiController extends Thread {
 
 	private ConcurrentLinkedQueue<RootEventA2G> anywhereToGui;
+	ConcurrentLinkedQueue<RootEventG2C> gcToPc;
 	private boolean runForever;
 
 	private MainPageGui mainPageGUI;
 	private int controllerSleepTime = 50;
 
-	public GuiController(ConcurrentLinkedQueue<RootEventA2G> anywhereToGui) 
+	public GuiController(ConcurrentLinkedQueue<RootEventA2G> anywhereToGui, ConcurrentLinkedQueue<RootEventG2C> gcToPc) 
 	{
 		super();
 		this.anywhereToGui = anywhereToGui;
-		mainPageGUI = new MainPageGui();
+		this.gcToPc = gcToPc;
+		mainPageGUI = new MainPageGui(gcToPc);
 		runForever = true;
 	}
 	
@@ -27,8 +30,10 @@ public class GuiController extends Thread {
 	public void run()
 	{
 		Logger.logMajorEvent("Gui Controller Started.");
-
-		/* Wait till GUI if fully initialised */
+		
+		mainPageGUI.start();
+		
+		/* Wait till GUI if fully initialized */
 		while(!mainPageGUI.isGuiInitialised)
 		{
 			try {	sleep(100);	}

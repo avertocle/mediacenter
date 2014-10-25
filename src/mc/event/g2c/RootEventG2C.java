@@ -2,7 +2,7 @@ package mc.event.g2c;
 
 public class RootEventG2C {
 
-	public static enum EventTypeG2C {};
+	public static enum EventTypeG2C {PlayMedia};
 	
 	private EventTypeG2C type;
 	private Object data;
