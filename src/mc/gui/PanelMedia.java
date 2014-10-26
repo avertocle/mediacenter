@@ -19,26 +19,35 @@ public class PanelMedia extends JPanel {
 	private TableMedia tableMedia;
 	private JScrollPane sp_tableMedia;
 	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
+	private MapMediaTable mapMediaTable;
 	
 	public PanelMedia(ConcurrentLinkedQueue<RootEventG2C> gcToPc){
 		super();
 		this.gcToPc = gcToPc;
+		mapMediaTable = new MapMediaTable();
 		makeUIElements();
 		makePanel();
 	}
 	
 	public void reloadWholeLibrary(List<Object[]> list) {
+		int index = 0;
 		for(Object[] rowData : list){
-			tmodelMedia.addRow(rowData);
+			index = addToTableModel(new Object[]{rowData[0]});
+			mapMediaTable.storeMedia(index, (Integer)(rowData[1]), (String)(rowData[2]));
 		}
 	}
 	
+	private int addToTableModel(Object[] objects) {
+		tmodelMedia.addRow(objects);
+		return tmodelMedia.getRowCount() - 1;
+	}
+
 	/************* Methods ****************************************/
 	
 	private void makeUIElements() 
 	{
 		tmodelMedia = new TableModelMedia();
-		tableMedia = new TableMedia(tmodelMedia, gcToPc);
+		tableMedia = new TableMedia(mapMediaTable, tmodelMedia, gcToPc);
 		sp_tableMedia = new JScrollPane(tableMedia);
 		sp_tableMedia.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 	}

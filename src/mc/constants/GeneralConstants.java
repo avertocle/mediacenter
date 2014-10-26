@@ -6,4 +6,10 @@ public class GeneralConstants {
 	public static final String VersionInfo = "25.10.2014";
 	
 	public static String frameHeading = "Media Center " +"[v" + Version + "@" + VersionInfo + "]";
+	
+	
+	public static String rootDir = "C://MediaCenter//";
+	public static final String rootDirWindows = "";
+	public static final String rootDirLinux = "";
+	
 }

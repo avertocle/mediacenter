@@ -13,6 +13,10 @@ import mc.event.g2c.RootEventG2C.EventTypeG2C;
 import mc.explorer.MediaFinder;
 import mc.explorer.MediaFinderWindows;
 import mc.gui.GuiController;
+import mc.mediautils.MediaInfoExtracter;
+import mc.mediautils.VideoInfoExtracter;
+import mc.model.LibraryTracker;
+import mc.model.Media;
 import mc.model.translater.DefaultGuiTranslater;
 import mc.model.translater.GuiTranslator;
 import mc.playback.PlaybackHandler;
@@ -31,7 +35,10 @@ public class Controller extends Thread {
 	private GuiTranslator guiTranslator;
 	private PlaybackHandler playbackHandler;
 	
+	private LibraryTracker libraryTracker;
+	
 	private MediaFinder mediaFinder;
+	private MediaInfoExtracter mediaInfoExtracter;
 
 	public Controller() 
 	{
@@ -50,6 +57,9 @@ public class Controller extends Thread {
 		
 		guiTranslator = new DefaultGuiTranslater();
 		playbackHandler = new PlaybackHandlerWindows();
+		
+		libraryTracker = new LibraryTracker();
+		mediaInfoExtracter = new VideoInfoExtracter();
 	}
 	
 	public void stopServer()
@@ -91,12 +101,26 @@ public class Controller extends Thread {
 	}
 
 	private void doStartupTasks() {
-		List<String> libFolderList = new Config().getLibraryFolders();
+		loadLibraryInModel();
+		sendLibraryDataToGui();
+	}
+	
+	private void loadLibraryInModel(){
+		List<String> libFolderList = Config.getInstance().getUsrLibDirList();
 		List<File> linFiles = mediaFinder.findAllMediaInDir(libFolderList.get(0));
 		
-		List<Object[]> guiData = new ArrayList<Object[]>();
+		Media media;
 		for(File file : linFiles){
-			guiData.add(new Object[]{file.getAbsolutePath()});
+			media = mediaInfoExtracter.getMediaObject(file);
+			libraryTracker.addMedia(media);
+		}
+	}
+	
+	private void sendLibraryDataToGui(){
+		List<Object> guiData = new ArrayList<Object>();
+		List<Media> mediaList = libraryTracker.getAllMedia();
+		for(Media m : mediaList){
+			guiData.add(guiTranslator.getGuiDisplayObject(EventTypeA2G.GuiReloadLibrary, m));
 		}
 		
 		RootEventA2G event = new RootEventA2G(EventTypeA2G.GuiReloadLibrary, guiData);

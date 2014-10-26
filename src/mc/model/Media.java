@@ -6,20 +6,58 @@ public abstract class Media {
 	
 	protected int id;
 	protected String name;
-	protected String path;
 	protected String filename;
 	protected String foldername;
 	protected String absPath;
 	
-	public Media(String name, String path, String filename,
-			String foldername, String absPath) {
+	public Media(String absPath) {
 		super();
 		this.id = ctr++;
-		this.name = name;
-		this.path = path;
-		this.filename = filename;
-		this.foldername = foldername;
 		this.absPath = absPath;
 	}
+	
+	/***************************************************************************
+	/* Getters
+	/***************************************************************************/
+	
+	public int getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getFoldername() {
+		return foldername;
+	}
+
+	public String getAbsPath() {
+		return absPath;
+	}
+
+	/***************************************************************************
+	/* Setters
+	/***************************************************************************/
+	
+	public Media setName(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public Media setFilename(String filename) {
+		this.filename = filename;
+		return this;
+	}
+
+	public Media setFoldername(String foldername) {
+		this.foldername = foldername;
+		return this;
+	}
+
 	
 }

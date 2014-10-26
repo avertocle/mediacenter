@@ -1,13 +1,11 @@
 package mc.gui;
 
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableModel;
 
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2c.RootEventG2C.EventTypeG2C;
@@ -17,10 +15,12 @@ public class TableMedia extends JTable {
 	private static final long serialVersionUID = 1L;
 	private TableModelMedia tmodel;
 	
-	ConcurrentLinkedQueue<RootEventG2C> gcToPc;
+	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
+	private MapMediaTable mapMediaTable;
 	
-	public TableMedia(TableModelMedia tmodelMedia, ConcurrentLinkedQueue<RootEventG2C> gcToPc) {
+	public TableMedia(MapMediaTable mapMediaTable, TableModelMedia tmodelMedia, ConcurrentLinkedQueue<RootEventG2C> gcToPc) {
 		super(tmodelMedia);
+		this.mapMediaTable = mapMediaTable;
 		this.tmodel = tmodelMedia;
 		this.gcToPc = gcToPc;
 		setTableProperties();
@@ -45,20 +45,6 @@ public class TableMedia extends JTable {
 		
 		this.addMouseListener(new MCL());
 		
-//		this.addComponentListener(new ComponentAdapter() 
-//		{
-//		   	public void componentResized(ComponentEvent ev) 
-//		   	{
-//		   		try	{	scrollRectToVisible(getCellRect(getRowCount()-1, 0, true));		}
-//		   		catch (Exception e)	{ Logger.logExceptionMinimal(e);	}
-//		   	}
-//		});
-//		
-//		restrictColumnWidth(TableModelTrades.colNumPGID, 50, 50);
-//		restrictColumnWidth(TableModelTrades.colNumTradeType, 0, 0);
-//		restrictColumnWidth(TableModelTrades.colNumLTQ, 50, 50);
-//		restrictColumnWidth(TableModelTrades.colNumQLeft, 50, 50);
-		
 	}
 	
 	class MCL implements MouseListener{
@@ -68,9 +54,8 @@ public class TableMedia extends JTable {
 			if(e.getSource().equals(TableMedia.this) && e.getClickCount() == 2) {
 		         int row = TableMedia.this.getSelectedRow();
 		         int column = TableMedia.this.getSelectedColumn();
-		         String fileAbsPath = (String) (tmodel.getValueAt(row, column));
+		         String fileAbsPath = mapMediaTable.getMediaPathByPosition(tmodel.calculateIndex(row, column));
 		         gcToPc.add(new RootEventG2C(EventTypeG2C.PlayMedia, fileAbsPath));
-		         // do some action
 		     }
 		   }
 

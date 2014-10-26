@@ -21,4 +21,10 @@ public class TableModelMedia extends DefaultTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		return String.class;
 	}
+	
+	public int calculateIndex(int row, int col){
+		int cc = this.getColumnCount();
+		int index = row*cc + col;
+		return index;
+	}
 }
