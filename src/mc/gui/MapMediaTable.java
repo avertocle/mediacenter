@@ -20,4 +20,9 @@ public class MapMediaTable {
 		mapIndexToMediaId.put(index, id);
 		mapIdToPath.put(id, path);
 	}
+	
+	public void clearAll(){
+		mapIdToPath.clear();
+		mapIndexToMediaId.clear();
+	}
 }

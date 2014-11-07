@@ -28,4 +28,8 @@ public class LibraryTracker {
 		return (new ArrayList<Media>(mapMediaToId.values()));
 	}
 	
+	public void clearAllMedia(){
+		mapMediaToId.clear();
+	}
+	
 }

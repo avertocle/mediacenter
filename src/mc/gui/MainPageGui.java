@@ -14,6 +14,8 @@ import javax.swing.SwingUtilities;
 
 import mc.constants.GeneralConstants;
 import mc.event.g2c.RootEventG2C;
+import mc.event.g2g.RootEventG2G;
+import mc.gui.library.DialogLibrary;
 
 public class MainPageGui {
 
@@ -29,9 +31,13 @@ public class MainPageGui {
 	private PanelControls panelControls;
 
 	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
+	private ConcurrentLinkedQueue<RootEventG2G> guiInternalQueue;
+	
+	private DialogLibrary dialogLibrary;
 
-	public MainPageGui(ConcurrentLinkedQueue<RootEventG2C> gcToPc) {
+	public MainPageGui(ConcurrentLinkedQueue<RootEventG2C> gcToPc, ConcurrentLinkedQueue<RootEventG2G> guiInternalQueue) {
 		this.gcToPc = gcToPc;
+		this.guiInternalQueue = guiInternalQueue;
 	}
 
 	/*********************************************************************
@@ -50,11 +56,6 @@ public class MainPageGui {
 		});
 	}
 
-	public void stop() {
-		frame.dispose();
-		return;
-	}
-
 	public void terminate() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -68,9 +69,13 @@ public class MainPageGui {
 	 *********************************************************************/
 
 	@SuppressWarnings("unchecked")
-	public void reloadWholeLibrary(Object data) {
-		List<Object[]> list = (List<Object[]>) (data);
-		panelMedia.reloadWholeLibrary(list);
+	public void reloadWholeLibrary(final Object data) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				List<Object[]> list = (List<Object[]>) (data);
+				panelMedia.reloadWholeLibrary(list);
+			}
+		});
 	}
 
 	public void removeMedia(Object data) {
@@ -82,14 +87,39 @@ public class MainPageGui {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void showConsole_manageLibrary(final List<String> dirList) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if(dialogLibrary.isShowing()){
+					dialogLibrary.refreshDialog(dirList);		
+				}
+				else{
+					dialogLibrary = new DialogLibrary(gcToPc, guiInternalQueue, new JFrame());
+					dialogLibrary.showDialog(dirList);
+				}
+			}
+		});
+	}
+	
+	public void closeConsole_CollectionMgmt() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if(dialogLibrary.isShowing()){
+					dialogLibrary.dispose();
+				}
+			}
+		});
+	}
 
 	/*********************************************************************
 	 * /* Internal Methods /
 	 *********************************************************************/
 
 	private void makeUIElements() {
-		panelControls = new PanelControls(gcToPc);
-		panelMedia = new PanelMedia(gcToPc);
+		panelControls = new PanelControls(gcToPc, guiInternalQueue);
+		panelMedia = new PanelMedia(gcToPc, guiInternalQueue);
+		dialogLibrary = new DialogLibrary(gcToPc, guiInternalQueue, new JFrame());
 	}
 
 	private void drawFrame() {
@@ -130,5 +160,4 @@ public class MainPageGui {
 		frame.setVisible(true);
 
 	}
-
 }

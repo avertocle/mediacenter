@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import mc.event.g2c.RootEventG2C;
+import mc.event.g2g.RootEventG2G;
 
 public class PanelMedia extends JPanel {
  
@@ -21,7 +22,7 @@ public class PanelMedia extends JPanel {
 	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
 	private MapMediaTable mapMediaTable;
 	
-	public PanelMedia(ConcurrentLinkedQueue<RootEventG2C> gcToPc){
+	public PanelMedia(ConcurrentLinkedQueue<RootEventG2C> gcToPc, ConcurrentLinkedQueue<RootEventG2G> guiInternalQueue){
 		super();
 		this.gcToPc = gcToPc;
 		mapMediaTable = new MapMediaTable();
@@ -30,6 +31,7 @@ public class PanelMedia extends JPanel {
 	}
 	
 	public void reloadWholeLibrary(List<Object[]> list) {
+		clearEverything();
 		int index = 0;
 		for(Object[] rowData : list){
 			index = addToTableModel(new Object[]{rowData[0]});
@@ -37,6 +39,11 @@ public class PanelMedia extends JPanel {
 		}
 	}
 	
+	private void clearEverything() {
+		tmodelMedia.setRowCount(0);
+		mapMediaTable.clearAll();
+	}
+
 	private int addToTableModel(Object[] objects) {
 		tmodelMedia.addRow(objects);
 		return tmodelMedia.getRowCount() - 1;

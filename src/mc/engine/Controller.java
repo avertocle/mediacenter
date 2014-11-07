@@ -101,16 +101,23 @@ public class Controller extends Thread {
 	}
 
 	private void doStartupTasks() {
+		scanCollectionsAndInformGui();
+	}
+	
+	private void scanCollectionsAndInformGui(){
 		loadLibraryInModel();
 		sendLibraryDataToGui();
 	}
 	
 	private void loadLibraryInModel(){
-		List<String> libFolderList = Config.getInstance().getUsrLibDirList();
-		List<File> linFiles = mediaFinder.findAllMediaInDir(libFolderList.get(0));
-		
+		List<String> collectionList = Config.getInstance().getUserCollectionList();
+		List<File> allFileList = new ArrayList<File>();
+		for(String collection : collectionList){
+			allFileList.addAll(mediaFinder.findAllMediaInDir(collection));
+		}
 		Media media;
-		for(File file : linFiles){
+		libraryTracker.clearAllMedia();
+		for(File file : allFileList){
 			media = mediaInfoExtracter.getMediaObject(file);
 			libraryTracker.addMedia(media);
 		}
@@ -122,7 +129,6 @@ public class Controller extends Thread {
 		for(Media m : mediaList){
 			guiData.add(guiTranslator.getGuiDisplayObject(EventTypeA2G.GuiReloadLibrary, m));
 		}
-		
 		RootEventA2G event = new RootEventA2G(EventTypeA2G.GuiReloadLibrary, guiData);
 		anywhereToGui.add(event);
 	}
@@ -134,6 +140,30 @@ public class Controller extends Thread {
 		{
 			String absPath = (String)(g2ce.getData());
 			playbackHandler.playInDefaultSystemPlayer(absPath);
+			break;
+		}
+		case AddDirToLib:
+		{
+			File file = (File)(g2ce.getData());
+			Config.getInstance().addCollection(file);
+			
+			try{	Config.getInstance().saveUserCollectionList();	}
+			catch(Exception ex ){	Logger.logException(ex);	}
+
+			List<String> dirList = Config.getInstance().getUserCollectionList();
+			anywhereToGui.add(new RootEventA2G(EventTypeA2G.Resp_GetDirList, dirList));
+			
+			break;
+		}
+		case ModelRequest_DirList:
+		{
+			List<String> dirList = Config.getInstance().getUserCollectionList();
+			anywhereToGui.add(new RootEventA2G(EventTypeA2G.Resp_GetDirList, dirList));
+			break;
+		}
+		case RescanCollection:
+		{
+			scanCollectionsAndInformGui();
 			break;
 		}
 		default:

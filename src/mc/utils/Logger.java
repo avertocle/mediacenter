@@ -40,19 +40,6 @@ public class Logger
 			System.out.println("[EXCEPTION]--------------------------------------------------");
 			return;
 		}
-		
-		/*
-		System.out.println("[Ex] : " + e.getMessage());
-		StackTraceElement[] stackTrace = e.getStackTrace();
-		for(StackTraceElement x : stackTrace)
-		{
-			String line = x.getFileName() + ", " +
-						  x.getClassName() + ", " + 
-						  x.getMethodName() + ", " + 
-						  x.getLineNumber() + ", ";
-			//logTofile("[Ex] : " + line);
-		}
-		*/
 	}
 	
 	public static void logExceptionMinimal(Exception e) 
