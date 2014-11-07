@@ -1,6 +1,6 @@
 package mc.engine;
 
-import mc.config.Config;
+import mc.config.UserProfile;
 import mc.utils.Logger;
 
 public class Main {
@@ -14,8 +14,8 @@ public class Main {
 
 	private static void initFilesAndFolders() {
 		try{
-			Config.getInstance().makeConfigFilesAndDirectories();
-			Config.getInstance().loadUserCollectionList();
+			UserProfile.getInstance().makeConfigFilesAndDirectories();
+			UserProfile.getInstance().loadUserCollectionList();
 		}
 		catch(Exception ex){
 			Logger.logMajorEvent("Error loading config");
