@@ -100,6 +100,14 @@ public class ColorConsts
 	public static Color clrConfirmDiagBg = Color.black;
 	public static Color clrConfirmDiagFg = Color.white;
 	
+	public static class Console_ManageCollections{
+		public static Color clrPanelBg = ColorConsts.clrPanelBg;
+		public static Color clrDirLabelBg = new Color(5, 60, 55);
+		public static Color clrDirLabelFg = Color.white;
+		public static Font fontDirLabel = new Font("SansSerif", Font.PLAIN, 15);
+		
+	}
+	
 	/******** Add Strategy Panel *********************************/
 	public static class AddStratPanelColors
 	{

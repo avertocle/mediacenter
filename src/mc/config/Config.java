@@ -2,6 +2,7 @@ package mc.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +10,17 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import mc.constants.GeneralConstants;
+import mc.utils.MiscUtils;
 
 public class Config {
 	
 	private static Config instance;
 	
-	private List<String> usrLibDirList;
+	private List<String> usrCollectionList;
 	
-	private static final String fname_userLibraryConf = GeneralConstants.rootDir + "userLibConf.ini";
+	private static final String fname_userCollections = GeneralConstants.rootDir + "userCollections.ini";
+	
+	private static final String ConfigFileKeyName = "collection";
 	
 	private Config(){
 		super();
@@ -40,27 +44,40 @@ public class Config {
 			file.mkdirs();
 		}
 		
-		file = new File(fname_userLibraryConf);
+		file = new File(fname_userCollections);
 		file.createNewFile();
 	}
 	
-	public void loadUserLibraryDirList() throws IOException{
-		usrLibDirList = new ArrayList<String>();
+	public void loadUserCollectionList() throws IOException{
+		usrCollectionList = new ArrayList<String>();
 		Properties properties = new Properties();
-		properties.load(new FileInputStream(new File(fname_userLibraryConf)));
+		properties.load(new FileInputStream(new File(fname_userCollections)));
 		for(Entry<Object, Object> entry : properties.entrySet()){
-			usrLibDirList.add(entry.getValue().toString());
+			usrCollectionList.add(entry.getValue().toString());
 		}
 	}
-
+	
+	public void saveUserCollectionList() throws IOException{
+		Properties properties = new Properties();
+		int ctr=0;
+		for(String dirName : usrCollectionList){
+			properties.put(ConfigFileKeyName + "_" + ctr, dirName);
+			ctr++;
+		}
+		String comment = "Settings saved at : " + MiscUtils.getCurrentTimestamp();
+		properties.store(new FileOutputStream(new File(fname_userCollections)), comment);
+	}
 	/***************************************************************************
-	/* Get Methods
+	/* API Methods
 	/***************************************************************************/
 
-	public List<String> getUsrLibDirList() {
-		return usrLibDirList;
+	public List<String> getUserCollectionList() {
+		return usrCollectionList;
 	}
 	
+	public void addCollection(File file){
+		usrCollectionList.add(file.getAbsolutePath());
+	}
 	
 	
 	

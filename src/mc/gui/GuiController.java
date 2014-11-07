@@ -1,14 +1,18 @@
 package mc.gui;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import mc.event.a2g.RootEventA2G;
 import mc.event.a2g.RootEventA2G.EventTypeA2G;
 import mc.event.g2c.RootEventG2C;
+import mc.event.g2g.RootEventG2G;
+import mc.event.g2g.RootEventG2G.EventTypeG2G;
 import mc.utils.Logger;
 
 public class GuiController extends Thread {
 
+	private ConcurrentLinkedQueue<RootEventG2G> guiInternalQueue;
 	private ConcurrentLinkedQueue<RootEventA2G> anywhereToGui;
 	ConcurrentLinkedQueue<RootEventG2C> gcToPc;
 	private boolean runForever;
@@ -19,9 +23,10 @@ public class GuiController extends Thread {
 	public GuiController(ConcurrentLinkedQueue<RootEventA2G> anywhereToGui, ConcurrentLinkedQueue<RootEventG2C> gcToPc) 
 	{
 		super();
+		guiInternalQueue = new ConcurrentLinkedQueue<RootEventG2G>();
 		this.anywhereToGui = anywhereToGui;
 		this.gcToPc = gcToPc;
-		mainPageGUI = new MainPageGui(gcToPc);
+		mainPageGUI = new MainPageGui(gcToPc, guiInternalQueue);
 		runForever = true;
 	}
 	
@@ -46,6 +51,8 @@ public class GuiController extends Thread {
 		
 		while(!a2geEmpty || runForever)
 		{
+			clearInternalGuievents();
+			
 			a2ge = anywhereToGui.poll();
 			if(a2ge == null)
 				a2geEmpty = true;
@@ -57,6 +64,28 @@ public class GuiController extends Thread {
 				try {	sleep(controllerSleepTime);	} 
 				catch (InterruptedException e) { Logger.logException(e);	}
 			}
+		}
+	}
+
+	private void clearInternalGuievents() {
+		RootEventG2G g2ge;
+		while(!guiInternalQueue.isEmpty()){
+			g2ge = guiInternalQueue.poll();
+			if(g2ge == null){
+				break;
+			}
+			handleInternalGuiEvent(g2ge);
+		}
+	}
+
+	private void handleInternalGuiEvent(RootEventG2G g2ge) {
+		EventTypeG2G eventTypeG2G = g2ge.getType();
+		switch (eventTypeG2G) {
+		case CloseConsole_CollectionMgmt:
+		{
+			mainPageGUI.closeConsole_CollectionMgmt();
+			break;
+		}
 		}
 	}
 
@@ -98,9 +127,18 @@ public class GuiController extends Thread {
 		case GuiStop:
 		{	
 			anywhereToGui.clear();
-			mainPageGUI.stop();
+			mainPageGUI.terminate();
 			break;
 		}
+		case Resp_GetDirList:
+		{
+			@SuppressWarnings("unchecked")
+			List<String> dirList = (List<String>)(a2ge.getData());
+			mainPageGUI.showConsole_manageLibrary(dirList);
+			break;
+		}
+		default:
+			break;
 		}
 	}
 

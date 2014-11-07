@@ -15,7 +15,7 @@ public class Main {
 	private static void initFilesAndFolders() {
 		try{
 			Config.getInstance().makeConfigFilesAndDirectories();
-			Config.getInstance().loadUserLibraryDirList();
+			Config.getInstance().loadUserCollectionList();
 		}
 		catch(Exception ex){
 			Logger.logMajorEvent("Error loading config");

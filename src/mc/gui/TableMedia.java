@@ -9,6 +9,7 @@ import javax.swing.ListSelectionModel;
 
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2c.RootEventG2C.EventTypeG2C;
+import mc.utils.Logger;
 
 public class TableMedia extends JTable {
 	
@@ -51,6 +52,7 @@ public class TableMedia extends JTable {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			Logger.logFrequentEvent(e.toString());
 			if(e.getSource().equals(TableMedia.this) && e.getClickCount() == 2) {
 		         int row = TableMedia.this.getSelectedRow();
 		         int column = TableMedia.this.getSelectedColumn();

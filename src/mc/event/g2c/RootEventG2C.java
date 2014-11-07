@@ -2,7 +2,7 @@ package mc.event.g2c;
 
 public class RootEventG2C {
 
-	public static enum EventTypeG2C {PlayMedia};
+	public static enum EventTypeG2C {PlayMedia, AddDirToLib, ModelRequest_DirList, RescanCollection};
 	
 	private EventTypeG2C type;
 	private Object data;
