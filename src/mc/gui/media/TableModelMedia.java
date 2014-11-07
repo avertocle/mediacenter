@@ -1,4 +1,4 @@
-package mc.gui;
+package mc.gui.media;
 
 import javax.swing.table.DefaultTableModel;
 

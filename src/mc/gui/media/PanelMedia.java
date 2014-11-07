@@ -1,4 +1,4 @@
-package mc.gui;
+package mc.gui.media;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +11,7 @@ import javax.swing.ScrollPaneConstants;
 
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2g.RootEventG2G;
+import mc.gui.ColorConsts;
 
 public class PanelMedia extends JPanel {
  

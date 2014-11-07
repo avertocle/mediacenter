@@ -15,11 +15,10 @@ import mc.event.g2c.RootEventG2C.EventTypeG2C;
 import mc.explorer.MediaFinder;
 import mc.explorer.MediaFinderWindows;
 import mc.gui.GuiController;
-import mc.mediautils.MediaInfoExtracter;
-import mc.mediautils.VideoInfoExtracter;
 import mc.model.LibraryTracker;
-import mc.model.Media;
-import mc.model.translater.DefaultGuiTranslater;
+import mc.model.media.Media;
+import mc.model.media.MediaInfoExtracter;
+import mc.model.translater.GuiTranslaterMovie;
 import mc.model.translater.GuiTranslator;
 import mc.playback.PlaybackHandler;
 import mc.playback.PlaybackHandlerWindows;
@@ -168,10 +167,10 @@ public class Controller extends Thread {
 		guiController = new GuiController(anywhereToGui, gcToPc);
 		guiController.start();
 		
-		guiTranslator = new DefaultGuiTranslater();
+		guiTranslator = new GuiTranslaterMovie();
 		
 		libraryTracker = new LibraryTracker();
-		mediaInfoExtracter = new VideoInfoExtracter();
+		mediaInfoExtracter = new MediaInfoExtracter();
 		
 		detectAndSetOS();
 		initializePlatformDependentHandlers();

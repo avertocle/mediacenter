@@ -16,6 +16,7 @@ import mc.constants.GeneralConstants;
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2g.RootEventG2G;
 import mc.gui.library.DialogLibrary;
+import mc.gui.media.PanelMedia;
 
 public class MainPageGui {
 
