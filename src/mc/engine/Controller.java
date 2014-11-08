@@ -17,7 +17,10 @@ import mc.explorer.MediaFinderWindows;
 import mc.gui.GuiController;
 import mc.model.LibraryTracker;
 import mc.model.media.Media;
+import mc.model.media.MediaInfo;
 import mc.model.media.MediaInfoExtracter;
+import mc.model.media.MediaInfoFetcher;
+import mc.model.movie.RtMovieInfoFetcher;
 import mc.model.translater.GuiTranslaterMovie;
 import mc.model.translater.GuiTranslator;
 import mc.playback.PlaybackHandler;
@@ -40,6 +43,7 @@ public class Controller extends Thread {
 	
 	private MediaFinder mediaFinder;
 	private MediaInfoExtracter mediaInfoExtracter;
+	private MediaInfoFetcher mediaInfoFetcher;
 
 	public Controller() {
 		super();
@@ -96,9 +100,12 @@ public class Controller extends Thread {
 			allFileList.addAll(mediaFinder.findAllMediaInDir(collection));
 		}
 		Media media;
+		MediaInfo mediaInfo;
 		libraryTracker.clearAllMedia();
 		for(File file : allFileList){
 			media = mediaInfoExtracter.getMediaObject(file);
+			mediaInfo = mediaInfoFetcher.fetchInfo(media.getName());
+			media.setMediaInfo(mediaInfo);
 			libraryTracker.addMedia(media);
 		}
 	}
@@ -171,6 +178,7 @@ public class Controller extends Thread {
 		
 		libraryTracker = new LibraryTracker();
 		mediaInfoExtracter = new MediaInfoExtracter();
+		mediaInfoFetcher = new RtMovieInfoFetcher();
 		
 		detectAndSetOS();
 		initializePlatformDependentHandlers();

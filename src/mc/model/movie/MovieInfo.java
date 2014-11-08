@@ -4,7 +4,7 @@ import mc.model.media.MediaInfo;
 
 public class MovieInfo extends MediaInfo{
 
-	protected String cleanedName;
+	protected String name;
 	protected String year;
 	protected String imdbId;
 	protected String actors;
@@ -13,14 +13,20 @@ public class MovieInfo extends MediaInfo{
 	
 	public MovieInfo() {
 		super();
+		this.name = "";
+		this.year = "";
+		this.imdbId = "";
+		this.actors = "";
+		this.director = "";
+		this.rating = "";
 	}
 
-	public String getCleanedName() {
-		return cleanedName;
+	public String getName() {
+		return name;
 	}
 
-	public void setCleanedName(String cleanedName) {
-		this.cleanedName = cleanedName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getYear() {

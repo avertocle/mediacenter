@@ -9,8 +9,8 @@ public class MediaInfoExtracter {
 		if(file == null){
 			return null;
 		}
-		Media video = (new Media(file.getAbsolutePath())).setFilename(file.getName()).setName(file.getName()).setFoldername(file.getParent());
-		return video;
+		Media media = (new Media(file.getAbsolutePath())).setFilename(file.getName()).setName(file.getName()).setFoldername(file.getParent());
+		return media;
 	}
 
 }
