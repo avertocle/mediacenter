@@ -1,6 +1,6 @@
-package mc.model;
+package mc.model.media;
 
-public abstract class Media {
+public class Media {
 	
 	private static int ctr = 0;
 	
@@ -9,6 +9,7 @@ public abstract class Media {
 	protected String filename;
 	protected String foldername;
 	protected String absPath;
+	protected MediaInfo mediaInfo;
 	
 	public Media(String absPath) {
 		super();
@@ -39,6 +40,10 @@ public abstract class Media {
 	public String getAbsPath() {
 		return absPath;
 	}
+	
+	public MediaInfo getMediaInfo() {
+		return mediaInfo;
+	}
 
 	/***************************************************************************
 	/* Setters
@@ -57,6 +62,10 @@ public abstract class Media {
 	public Media setFoldername(String foldername) {
 		this.foldername = foldername;
 		return this;
+	}
+
+	public void setMediaInfo(MediaInfo mediaInfo) {
+		this.mediaInfo = mediaInfo;
 	}
 
 	

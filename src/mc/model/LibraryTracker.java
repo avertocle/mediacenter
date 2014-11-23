@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import mc.model.media.Media;
+
 public class LibraryTracker {
 	
 	private ConcurrentHashMap<Integer, Media> mapMediaToId;

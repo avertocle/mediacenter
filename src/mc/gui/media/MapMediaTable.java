@@ -1,4 +1,4 @@
-package mc.gui;
+package mc.gui.media;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,5 +24,14 @@ public class MapMediaTable {
 	public void clearAll(){
 		mapIdToPath.clear();
 		mapIndexToMediaId.clear();
+	}
+	
+	public String debugDump(){
+		StringBuilder sb = new StringBuilder();
+		for(int index : mapIndexToMediaId.keySet()){
+			sb.append(index + " : " + mapIndexToMediaId.get(index) + " : " + "(" + mapIdToPath.get(mapIndexToMediaId.get(index)) + ")");
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
 }

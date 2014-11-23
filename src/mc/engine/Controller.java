@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import mc.config.Config;
+import mc.config.Config.OS;
+import mc.config.UserProfile;
+import mc.constants.GeneralConstants;
 import mc.event.a2g.RootEventA2G;
 import mc.event.a2g.RootEventA2G.EventTypeA2G;
 import mc.event.g2c.RootEventG2C;
@@ -13,11 +16,14 @@ import mc.event.g2c.RootEventG2C.EventTypeG2C;
 import mc.explorer.MediaFinder;
 import mc.explorer.MediaFinderWindows;
 import mc.gui.GuiController;
-import mc.mediautils.MediaInfoExtracter;
-import mc.mediautils.VideoInfoExtracter;
 import mc.model.LibraryTracker;
-import mc.model.Media;
-import mc.model.translater.DefaultGuiTranslater;
+import mc.model.media.Media;
+import mc.model.media.MediaInfo;
+import mc.model.media.MediaInfoExtracter;
+import mc.model.media.MediaInfoFetcher;
+import mc.model.movie.LocalMovieInfoFetcher;
+import mc.model.movie.RtMovieInfoFetcher;
+import mc.model.translater.GuiTranslaterMovie;
 import mc.model.translater.GuiTranslator;
 import mc.playback.PlaybackHandler;
 import mc.playback.PlaybackHandlerWindows;
@@ -39,61 +45,42 @@ public class Controller extends Thread {
 	
 	private MediaFinder mediaFinder;
 	private MediaInfoExtracter mediaInfoExtracter;
-
-	public Controller() 
-	{
+	private MediaInfoFetcher mediaInfoFetcher;
+	private MediaInfoFetcher mediaInfoFetcherLocal;
+	
+	public Controller() {
 		super();
 		runForever = true;
 	}
-	
-	private void initialize() {
-		
-		mediaFinder = new MediaFinderWindows();
-		
-		anywhereToGui = new ConcurrentLinkedQueue<RootEventA2G>();
-		gcToPc = new ConcurrentLinkedQueue<RootEventG2C>();
-		guiController = new GuiController(anywhereToGui, gcToPc);
-		guiController.start();
-		
-		guiTranslator = new DefaultGuiTranslater();
-		playbackHandler = new PlaybackHandlerWindows();
-		
-		libraryTracker = new LibraryTracker();
-		mediaInfoExtracter = new VideoInfoExtracter();
-	}
-	
-	public void stopServer()
-	{
+
+	public void stopServer() {
 		if(guiController.isAlive()){
 			guiController.stopServer();
 		}
-		
 		runForever = false;
 	}
 
-	/*********** Exposed Methods *******************************/
+	/************************************************************/
+	/** Methods 											
+	/************************************************************/	
 	
-	public void run()
-	{
+	public void run() {
 		initialize();
 		doStartupTasks();
 		
 		boolean a2geEmpty = false;
 		RootEventG2C g2ce = null;
 		
-		while(!a2geEmpty || runForever)
-		{
+		while(!a2geEmpty || runForever) {
 			g2ce = gcToPc.poll();
 			if(g2ce == null)
 				a2geEmpty = true;
-			else
-			{
+			else {
 				try {	handleG2CEvent(g2ce);	}
 				catch (Exception ex) { Logger.logException(ex);	}
 			}
 			
-			if(a2geEmpty)
-			{
+			if(a2geEmpty) {
 				try {	sleep(controllerSleepTime);	} 
 				catch (InterruptedException e) { Logger.logException(e);	}
 			}
@@ -110,15 +97,25 @@ public class Controller extends Thread {
 	}
 	
 	private void loadLibraryInModel(){
-		List<String> collectionList = Config.getInstance().getUserCollectionList();
+		List<String> collectionList = UserProfile.getInstance().getUserCollectionList();
 		List<File> allFileList = new ArrayList<File>();
 		for(String collection : collectionList){
 			allFileList.addAll(mediaFinder.findAllMediaInDir(collection));
 		}
 		Media media;
+		MediaInfo mediaInfo;
 		libraryTracker.clearAllMedia();
 		for(File file : allFileList){
 			media = mediaInfoExtracter.getMediaObject(file);
+			mediaInfoFetcherLocal.fetchInfo(media.getName());
+			mediaInfo = mediaInfoFetcherLocal.fetchInfo(media.getName());
+			media.setMediaInfo(mediaInfo);
+			if(GeneralConstants.fetchMovieInfo){
+				mediaInfo = mediaInfoFetcher.fetchInfo(media.getName());
+				if(mediaInfo != null){
+					media.setMediaInfo(mediaInfo);
+				}
+			}
 			libraryTracker.addMedia(media);
 		}
 	}
@@ -139,25 +136,29 @@ public class Controller extends Thread {
 		case PlayMedia:
 		{
 			String absPath = (String)(g2ce.getData());
-			playbackHandler.playInDefaultSystemPlayer(absPath);
+			try {
+				playbackHandler.playInDefaultSystemPlayer(absPath);
+			} catch (Exception ex) {
+				Logger.logException(ex);
+			}
 			break;
 		}
 		case AddDirToLib:
 		{
 			File file = (File)(g2ce.getData());
-			Config.getInstance().addCollection(file);
+			UserProfile.getInstance().addCollection(file);
 			
-			try{	Config.getInstance().saveUserCollectionList();	}
+			try{	UserProfile.getInstance().saveUserCollectionList();	}
 			catch(Exception ex ){	Logger.logException(ex);	}
 
-			List<String> dirList = Config.getInstance().getUserCollectionList();
+			List<String> dirList = UserProfile.getInstance().getUserCollectionList();
 			anywhereToGui.add(new RootEventA2G(EventTypeA2G.Resp_GetDirList, dirList));
 			
 			break;
 		}
 		case ModelRequest_DirList:
 		{
-			List<String> dirList = Config.getInstance().getUserCollectionList();
+			List<String> dirList = UserProfile.getInstance().getUserCollectionList();
 			anywhereToGui.add(new RootEventA2G(EventTypeA2G.Resp_GetDirList, dirList));
 			break;
 		}
@@ -170,5 +171,67 @@ public class Controller extends Thread {
 			break;
 		}
 	}
+	
+	/************************************************************/
+	/** INITIALIZATION 											
+	/************************************************************/
+	
+	private void initialize() {
+		
+		
+		anywhereToGui = new ConcurrentLinkedQueue<RootEventA2G>();
+		gcToPc = new ConcurrentLinkedQueue<RootEventG2C>();
+		guiController = new GuiController(anywhereToGui, gcToPc);
+		guiController.start();
+		
+		guiTranslator = new GuiTranslaterMovie();
+		
+		libraryTracker = new LibraryTracker();
+		mediaInfoExtracter = new MediaInfoExtracter();
+		mediaInfoFetcher = new RtMovieInfoFetcher();
+		mediaInfoFetcherLocal = new LocalMovieInfoFetcher();
+		
+		detectAndSetOS();
+		initializePlatformDependentHandlers();
+	}
+	
+	private void detectAndSetOS() {
+		String osName = System.getProperty("os.name");
+		if(osName.startsWith("Windows")){
+			Config.getInstance().setCurrentOS(OS.Windows);
+		}
+		else if(osName.startsWith("Linux")){
+			Config.getInstance().setCurrentOS(OS.Linux);
+		}
+		else if(osName.equalsIgnoreCase("Mac OS X")){
+			Config.getInstance().setCurrentOS(OS.Mac);
+		}
+		else {
+			Config.getInstance().setCurrentOS(OS.Unknown);
+		}
+	}
+	
+	private void initializePlatformDependentHandlers(){
+		OS os = Config.getInstance().getCurrentOS();
+		
+		switch(os) {
+		case Windows:
+		{
+			playbackHandler = new PlaybackHandlerWindows();
+			mediaFinder = new MediaFinderWindows();
+			break;
+		}
+		case Linux:
+			break;
+		case Mac:
+			break;
+		case Unknown:
+			break;
+		default:
+			break;
+			
+		}
+	}
+	
 
 }
