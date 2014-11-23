@@ -14,6 +14,7 @@ import mc.event.a2g.RootEventA2G.EventTypeA2G;
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2c.RootEventG2C.EventTypeG2C;
 import mc.explorer.MediaFinder;
+import mc.explorer.MediaFinderLinux;
 import mc.explorer.MediaFinderWindows;
 import mc.gui.GuiController;
 import mc.model.LibraryTracker;
@@ -26,6 +27,7 @@ import mc.model.movie.RtMovieInfoFetcher;
 import mc.model.translater.GuiTranslaterMovie;
 import mc.model.translater.GuiTranslator;
 import mc.playback.PlaybackHandler;
+import mc.playback.PlaybackHandlerLinux;
 import mc.playback.PlaybackHandlerWindows;
 import mc.utils.Logger;
 
@@ -191,24 +193,7 @@ public class Controller extends Thread {
 		mediaInfoFetcher = new RtMovieInfoFetcher();
 		mediaInfoFetcherLocal = new LocalMovieInfoFetcher();
 		
-		detectAndSetOS();
 		initializePlatformDependentHandlers();
-	}
-	
-	private void detectAndSetOS() {
-		String osName = System.getProperty("os.name");
-		if(osName.startsWith("Windows")){
-			Config.getInstance().setCurrentOS(OS.Windows);
-		}
-		else if(osName.startsWith("Linux")){
-			Config.getInstance().setCurrentOS(OS.Linux);
-		}
-		else if(osName.equalsIgnoreCase("Mac OS X")){
-			Config.getInstance().setCurrentOS(OS.Mac);
-		}
-		else {
-			Config.getInstance().setCurrentOS(OS.Unknown);
-		}
 	}
 	
 	private void initializePlatformDependentHandlers(){
@@ -222,7 +207,11 @@ public class Controller extends Thread {
 			break;
 		}
 		case Linux:
+		{
+			playbackHandler = new PlaybackHandlerLinux();
+			mediaFinder = new MediaFinderLinux();
 			break;
+		}
 		case Mac:
 			break;
 		case Unknown:
