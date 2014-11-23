@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import mc.config.Config;
 import mc.config.Config.OS;
 import mc.config.UserProfile;
+import mc.constants.GeneralConstants;
 import mc.event.a2g.RootEventA2G;
 import mc.event.a2g.RootEventA2G.EventTypeA2G;
 import mc.event.g2c.RootEventG2C;
@@ -20,6 +21,7 @@ import mc.model.media.Media;
 import mc.model.media.MediaInfo;
 import mc.model.media.MediaInfoExtracter;
 import mc.model.media.MediaInfoFetcher;
+import mc.model.movie.LocalMovieInfoFetcher;
 import mc.model.movie.RtMovieInfoFetcher;
 import mc.model.translater.GuiTranslaterMovie;
 import mc.model.translater.GuiTranslator;
@@ -44,7 +46,8 @@ public class Controller extends Thread {
 	private MediaFinder mediaFinder;
 	private MediaInfoExtracter mediaInfoExtracter;
 	private MediaInfoFetcher mediaInfoFetcher;
-
+	private MediaInfoFetcher mediaInfoFetcherLocal;
+	
 	public Controller() {
 		super();
 		runForever = true;
@@ -104,8 +107,15 @@ public class Controller extends Thread {
 		libraryTracker.clearAllMedia();
 		for(File file : allFileList){
 			media = mediaInfoExtracter.getMediaObject(file);
-			mediaInfo = mediaInfoFetcher.fetchInfo(media.getName());
+			mediaInfoFetcherLocal.fetchInfo(media.getName());
+			mediaInfo = mediaInfoFetcherLocal.fetchInfo(media.getName());
 			media.setMediaInfo(mediaInfo);
+			if(GeneralConstants.fetchMovieInfo){
+				mediaInfo = mediaInfoFetcher.fetchInfo(media.getName());
+				if(mediaInfo != null){
+					media.setMediaInfo(mediaInfo);
+				}
+			}
 			libraryTracker.addMedia(media);
 		}
 	}
@@ -179,6 +189,7 @@ public class Controller extends Thread {
 		libraryTracker = new LibraryTracker();
 		mediaInfoExtracter = new MediaInfoExtracter();
 		mediaInfoFetcher = new RtMovieInfoFetcher();
+		mediaInfoFetcherLocal = new LocalMovieInfoFetcher();
 		
 		detectAndSetOS();
 		initializePlatformDependentHandlers();

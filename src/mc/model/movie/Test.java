@@ -9,7 +9,7 @@ import mc.utils.Logger;
 
 public class Test {
 
-	public static void main(String[] args) {
+	public static void mainw(String[] args) {
 		Test test = new Test();
 		List<String> list = test.loadLibraryInModel();
 		test.execute(list);

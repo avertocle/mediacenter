@@ -12,4 +12,8 @@ public class GeneralConstants {
 	public static final String rootDirWindows = "";
 	public static final String rootDirLinux = "";
 	
+	public static final boolean fetchMovieInfo = false;
+	
+	public static String[] extensions = {"mov", "mkv", "mp4", "mpg", "wmv", "avi", "flv", "mpeg", "m4v"};
+	
 }

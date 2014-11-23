@@ -1,6 +1,7 @@
 package mc.model.movie;
 
 import com.google.gson.Gson;
+
 import mc.model.media.MediaInfoFetcher;
 import mc.utils.HttpLibrary;
 
@@ -42,6 +43,5 @@ public class RtMovieInfoFetcher implements MediaInfoFetcher{
 		String delim = ((url.contains("?")) ? "&" : "?");
 		return (delim + key + "=" + value);
 	}
-
 }
 

@@ -14,12 +14,7 @@ public class GuiTranslaterMovie implements GuiTranslator{
 		{
 			Media m = (Media)modelResponse;
 			MovieInfo info = (MovieInfo)m.getMediaInfo();
-			if(info == null){
-				return (new Object[]{m.getName(), "", m.getId(), m.getAbsPath(), "-", "-", "-" });
-			}
-			else{
-				return (new Object[]{m.getName(), info.getName(), m.getId(), m.getAbsPath(), info.getYear(), info.getDirector()});
-			}
+			return (new Object[]{m.getId(), m.getAbsPath(), m.getName(), info.getName(), info.getYear(), info.getDirector()});
 		}
 		default:
 			return null;

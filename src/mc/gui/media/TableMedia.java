@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableRowSorter;
 
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2c.RootEventG2C.EventTypeG2C;
@@ -20,11 +21,14 @@ public class TableMedia extends JTable {
 	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
 	private MapMediaTable mapMediaTable;
 
+	private TableRowSorter<TableModelMedia> tsorter;
+	
 	public TableMedia(MapMediaTable mapMediaTable, TableModelMedia tmodelMedia,
-			ConcurrentLinkedQueue<RootEventG2C> gcToPc) {
+			TableRowSorter<TableModelMedia> tsorter, ConcurrentLinkedQueue<RootEventG2C> gcToPc) {
 		super(tmodelMedia);
 		this.mapMediaTable = mapMediaTable;
 		this.tmodel = tmodelMedia;
+		this.tsorter = tsorter;
 		this.gcToPc = gcToPc;
 		setTableProperties();
 	}
@@ -46,7 +50,17 @@ public class TableMedia extends JTable {
 		this.getTableHeader().setFont(ColorConsts.Table_Media.fontHeader);
 
 		this.addMouseListener(new MCL());
+		
+		fixColumnWidth(TableModelMedia.colNumYear, 100);
+		fixColumnWidth(TableModelMedia.colNumDirector, 250);
+		
+		this.setRowSorter(tsorter);
+		
+	}
 
+	private void fixColumnWidth(int colNo, int width){
+		this.getColumnModel().getColumn(colNo).setMaxWidth(width);
+		this.getColumnModel().getColumn(colNo).setPreferredWidth(width);
 	}
 
 	class MCL implements MouseListener {
@@ -55,9 +69,9 @@ public class TableMedia extends JTable {
 		public void mouseClicked(MouseEvent e) {
 			Logger.logFrequentEvent(e.toString());
 			if (e.getSource().equals(TableMedia.this) && e.getClickCount() == 2) {
-				int row = TableMedia.this.getSelectedRow();
-				int column = TableMedia.this.getSelectedColumn();
-				String fileAbsPath = mapMediaTable.getMediaPathByPosition(tmodel.calculateIndex(row, column));
+				int row_v = TableMedia.this.getSelectedRow();
+				int row = convertRowIndexToModel(row_v);
+				String fileAbsPath = mapMediaTable.getMediaPathByPosition(row);
 				gcToPc.add(new RootEventG2C(EventTypeG2C.PlayMedia, fileAbsPath));
 			}
 		}
