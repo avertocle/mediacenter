@@ -1,9 +1,7 @@
 1. Isolate rotten tomato API and mapdb as a separate Info provider module with key centred on cleaned name + year as that's the only thing available after a collection is scanned.
 2. Column for comments #tags 
 3. Multi row select for bulk tagging.
-4. Only name column should start play back on click.
-5. Path column should open the explorer for that folder.
 6. Powerful filter infra.
 7. Separate module for user-comment storage centred on cleaned name + year.
-8. option to choose which collections to use in current session.
 9. Functionality to delete collections.
+10.

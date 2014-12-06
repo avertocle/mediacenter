@@ -16,6 +16,8 @@ import mc.utils.Logger;
 public class TableMedia extends JTable {
 
 	private static final long serialVersionUID = 1L;
+	
+	@SuppressWarnings("unused")
 	private TableModelMedia tmodel;
 
 	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
@@ -35,7 +37,7 @@ public class TableMedia extends JTable {
 
 	private void setTableProperties() {
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.setRowSelectionAllowed(true);
+		this.setCellSelectionEnabled(true);
 		this.setFillsViewportHeight(true);
 		this.setShowGrid(true);
 
