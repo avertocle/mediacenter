@@ -71,8 +71,14 @@ public class TableMedia extends JTable {
 			if (e.getSource().equals(TableMedia.this) && e.getClickCount() == 2) {
 				int row_v = TableMedia.this.getSelectedRow();
 				int row = convertRowIndexToModel(row_v);
+				int col_v = TableMedia.this.getSelectedColumn();
 				String fileAbsPath = mapMediaTable.getMediaPathByPosition(row);
-				gcToPc.add(new RootEventG2C(EventTypeG2C.PlayMedia, fileAbsPath));
+				if(col_v == TableModelMedia.colNumName){
+					gcToPc.add(new RootEventG2C(EventTypeG2C.PlayMedia, fileAbsPath));
+				}
+				else if(col_v == TableModelMedia.colNumFile){
+					gcToPc.add(new RootEventG2C(EventTypeG2C.OpenContainingFolder, fileAbsPath));
+				}
 			}
 		}
 

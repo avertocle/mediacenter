@@ -57,5 +57,15 @@ public class ColorConsts
 		public static Color clrCellFg = new Color(255, 100, 100);			// pastel red
 	}
 	
+	public static class Table_Collections{
+		
+		public static Color clrBg = new Color(12,12,12);
+		public static Color clrFg = Color.white;
+		public static Font font = new Font("SansSerif", Font.PLAIN, 15);
+
+		public static Color clrCellBg = new Color(0, 80, 107);
+		public static Color clrCellFg = Color.WHITE;			
+	}
+	
 }
 

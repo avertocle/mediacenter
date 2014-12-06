@@ -96,8 +96,17 @@ public class Controller extends Thread {
 		sendLibraryDataToGui();
 	}
 	
+	private void scanCollectionsAndInformGui(List<String> list){
+		loadLibraryInModel(list);
+		sendLibraryDataToGui();
+	}
+	
 	private void loadLibraryInModel(){
 		List<String> collectionList = UserProfile.getInstance().getUserCollectionList();
+		loadLibraryInModel(collectionList);
+	}
+	
+	private void loadLibraryInModel(List<String> collectionList){
 		List<File> allFileList = new ArrayList<File>();
 		for(String collection : collectionList){
 			allFileList.addAll(mediaFinder.findAllMediaInDir(collection));
@@ -164,11 +173,21 @@ public class Controller extends Thread {
 		}
 		case RescanCollection:
 		{
-			scanCollectionsAndInformGui();
+			@SuppressWarnings("unchecked")
+			List<String> list = (List<String>)g2ce.getData();
+			scanCollectionsAndInformGui(list);
 			break;
 		}
-		default:
+		case OpenContainingFolder:
+		{
+			String absPath = (String)(g2ce.getData());
+			try {
+				playbackHandler.openContainingFolder(absPath);
+			} catch (Exception ex) {
+				Logger.logException(ex);
+			}
 			break;
+		}
 		}
 	}
 	
