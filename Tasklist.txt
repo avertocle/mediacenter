@@ -4,4 +4,4 @@
 6. Powerful filter infra.
 7. Separate module for user-comment storage centred on cleaned name + year.
 9. Functionality to delete collections.
-10.
+10. Export view and import-and-generate-batch-file-to-copy-media functionality.
