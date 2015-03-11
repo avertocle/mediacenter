@@ -2,8 +2,8 @@ package mc.constants;
 
 public class GeneralConstants {
 	
-	public static final String Version = "1.0";
-	public static final String VersionInfo = "07.12.2014";
+	public static final String Version = "1.1";
+	public static final String VersionInfo = "12.03.2015";
 	
 	public static String frameHeading = "Media Center " +"[v" + Version + "@" + VersionInfo + "]";
 	
@@ -18,6 +18,6 @@ public class GeneralConstants {
 	
 	public static enum MediaType { Movie, Video, TV};
 	
-	public static MediaType defaultMediaType = MediaType.Video;
+	public static MediaType defaultMediaType = MediaType.Movie;
 
 }
