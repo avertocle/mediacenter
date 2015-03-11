@@ -16,4 +16,8 @@ public class GeneralConstants {
 	
 	public static String[] extensions = {"mov", "mkv", "mp4", "mpg", "wmv", "avi", "flv", "mpeg", "m4v"};
 	
+	public static enum MediaType { Movie, Video, TV};
+	
+	public static MediaType defaultMediaType = MediaType.Video;
+
 }

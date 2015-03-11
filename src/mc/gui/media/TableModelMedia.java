@@ -6,12 +6,13 @@ public class TableModelMedia extends DefaultTableModel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static String[] colnames = {"File", "Name", "Year", "Director"};
+	private static String[] colnames = {"File", "Name", "Year", "Director", "Size"};
 	
 	public static int colNumFile = 0;
 	public static int colNumName = 1;
 	public static int colNumYear = 2;
 	public static int colNumDirector = 3;
+	public static int colNumSize = 4;
 	
 	public TableModelMedia(){
 		super(colnames, 0);

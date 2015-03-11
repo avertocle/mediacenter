@@ -9,6 +9,7 @@ import mc.config.Config;
 import mc.config.Config.OS;
 import mc.config.UserProfile;
 import mc.constants.GeneralConstants;
+import mc.constants.GeneralConstants.MediaType;
 import mc.event.a2g.RootEventA2G;
 import mc.event.a2g.RootEventA2G.EventTypeA2G;
 import mc.event.g2c.RootEventG2C;
@@ -25,7 +26,9 @@ import mc.model.media.MediaInfoFetcher;
 import mc.model.movie.LocalMovieInfoFetcher;
 import mc.model.movie.RtMovieInfoFetcher;
 import mc.model.translater.GuiTranslaterMovie;
+import mc.model.translater.GuiTranslaterVideo;
 import mc.model.translater.GuiTranslator;
+import mc.model.video.LocalVideoInfoFetcher;
 import mc.playback.PlaybackHandler;
 import mc.playback.PlaybackHandlerLinux;
 import mc.playback.PlaybackHandlerWindows;
@@ -199,20 +202,35 @@ public class Controller extends Thread {
 	
 	private void initialize() {
 		
-		
 		anywhereToGui = new ConcurrentLinkedQueue<RootEventA2G>();
 		gcToPc = new ConcurrentLinkedQueue<RootEventG2C>();
 		guiController = new GuiController(anywhereToGui, gcToPc);
 		guiController.start();
 		
-		guiTranslator = new GuiTranslaterMovie();
-		
 		libraryTracker = new LibraryTracker();
 		mediaInfoExtracter = new MediaInfoExtracter();
-		mediaInfoFetcher = new RtMovieInfoFetcher();
-		mediaInfoFetcherLocal = new LocalMovieInfoFetcher();
+		
+		initializeMediaDependentHandlers();
 		
 		initializePlatformDependentHandlers();
+	}
+	
+	private void initializeMediaDependentHandlers() {
+		MediaType mediaType = GeneralConstants.defaultMediaType;
+		switch(mediaType){
+			case Movie:
+				guiTranslator = new GuiTranslaterMovie();
+				mediaInfoFetcher = new RtMovieInfoFetcher();
+				mediaInfoFetcherLocal = new LocalMovieInfoFetcher();
+				break;
+			case Video:
+				guiTranslator = new GuiTranslaterVideo();
+				mediaInfoFetcher = null;
+				mediaInfoFetcherLocal = new LocalVideoInfoFetcher();
+				break;
+			default:
+				break;
+		}
 	}
 	
 	private void initializePlatformDependentHandlers(){

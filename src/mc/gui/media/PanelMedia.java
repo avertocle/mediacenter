@@ -43,7 +43,7 @@ public class PanelMedia extends JPanel {
 		clearEverything();
 		int index = 0;
 		for(Object[] rowData : list){
-			index = addToTableModel(new Object[]{rowData[2], rowData[3], rowData[4], rowData[5]});
+			index = addToTableModel(new Object[]{rowData[2], rowData[3], rowData[4], rowData[5], rowData[6]});
 			mapMediaTable.storeMedia(index, (Integer)(rowData[0]), (String)(rowData[1]));
 		}
 	}

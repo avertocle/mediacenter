@@ -1,4 +1,4 @@
-package mc.model.movie;
+package mc.model.video;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,28 +12,33 @@ import mc.model.media.MediaInfoFetcher;
 import mc.utils.Logger;
 import mc.utils.MiscUtils;
 
-public class LocalMovieInfoFetcher implements MediaInfoFetcher{
+public class LocalVideoInfoFetcher implements MediaInfoFetcher{
 
 	private String[] stopwords = { "480p", "720p", "1080p", "x264", "brrip", "bluray", "m-hd", "dvdscr", "dvdrip" };
 	private Set<String> setStopwords;
 	
-	public LocalMovieInfoFetcher() {
+	private String[] qualityMarkers = {"480p","540p", "720p", "1080p"};
+	private Set<String> setQualityMarkers;
+	
+	private String[] typeMarkers = {"T - ", "TB - ",  "L - ", "x_", "l_", "L_", "lx_"};
+	private Set<String> setTypeMarkers;
+	
+	public LocalVideoInfoFetcher() {
 		setStopwords = new HashSet<String>(Arrays.asList(stopwords));
 		setStopwords.addAll(Arrays.asList(GeneralConstants.extensions));
+		setQualityMarkers = new HashSet<String>(Arrays.asList(qualityMarkers));
+		setTypeMarkers = new HashSet<String>(Arrays.asList(typeMarkers));
 	}
 	
 	@Override
-	public MovieInfo fetchInfo(String movieName) {
-		MovieInfo movieInfo = new MovieInfo();
-		
-		movieInfo.setName(getMovieName(movieName));
-		
-		int year = getMovieYear(movieName);
-		if(year > 0){
-			movieInfo.setYear(String.valueOf(year));
-		}
-		
-		return movieInfo;
+	public VideoInfo fetchInfo(String movieName) {
+		VideoInfo videoInfo = new VideoInfo();
+
+		videoInfo.setName(getVideoName(movieName));
+		videoInfo.setQuality(getVideoQuality(movieName));
+		videoInfo.setType(getVideoType(movieName));
+
+		return videoInfo;
 	}
 	
 	private String[] getTokens(String raw){
@@ -41,7 +46,7 @@ public class LocalMovieInfoFetcher implements MediaInfoFetcher{
 		return sp;
 	}
 	
-	private String getMovieName(String raw){
+	private String getVideoName(String raw){
 		String sp[] = getTokens(raw);
 		String name = "";
 		int ctr=0;
@@ -69,14 +74,23 @@ public class LocalMovieInfoFetcher implements MediaInfoFetcher{
 		return name;
 	}
 	
-	private int getMovieYear(String raw){
+	private String getVideoQuality(String raw){
 		String sp[] = getTokens(raw);
 		for(String s : sp){
-			if(MiscUtils.isYear(s)){
-				return Integer.parseInt(s);
+			if(setQualityMarkers.contains(s)){
+				return s;
 			}
 		}
-		return 0;
+		return "";
+	}
+	
+	private String getVideoType(String raw){
+		for(String tm : setTypeMarkers){
+			if(raw.startsWith(tm)){
+				return StringUtils.split(tm, " _-")[0];
+			}
+		}
+		return "";
 	}
 	
 	private boolean isStopword(String s){

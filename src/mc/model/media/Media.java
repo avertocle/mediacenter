@@ -9,6 +9,7 @@ public class Media {
 	protected String filename;
 	protected String foldername;
 	protected String absPath;
+	protected String size;
 	protected MediaInfo mediaInfo;
 	
 	public Media(String absPath) {
@@ -45,6 +46,10 @@ public class Media {
 		return mediaInfo;
 	}
 
+	public String getSize() {
+		return size;
+	}
+
 	/***************************************************************************
 	/* Setters
 	/***************************************************************************/
@@ -68,5 +73,8 @@ public class Media {
 		this.mediaInfo = mediaInfo;
 	}
 
+	public void setSize(String size) {
+		this.size = size;
+	}
 	
 }

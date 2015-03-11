@@ -54,7 +54,8 @@ public class TableMedia extends JTable {
 		this.addMouseListener(new MCL());
 		
 		fixColumnWidth(TableModelMedia.colNumYear, 100);
-		fixColumnWidth(TableModelMedia.colNumDirector, 250);
+		fixColumnWidth(TableModelMedia.colNumDirector, 100);
+		fixColumnWidth(TableModelMedia.colNumSize, 100);
 		
 		this.setRowSorter(tsorter);
 		
