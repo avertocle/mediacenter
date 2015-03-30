@@ -1,0 +1,7 @@
+1. Isolate rotten tomato API and mapdb as a separate Info provider module with key centred on cleaned name + year as that's the only thing available after a collection is scanned.
+2. Column for comments #tags 
+3. Multi row select for bulk tagging.
+6. Powerful filter infra.
+7. Separate module for user-comment storage centred on cleaned name + year.
+9. Functionality to delete collections.
+10. Export view and import-and-generate-batch-file-to-copy-media functionality.
