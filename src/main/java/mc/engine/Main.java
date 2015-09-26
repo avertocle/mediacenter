@@ -1,18 +1,22 @@
 package mc.engine;
 
 import mc.config.Config;
+import mc.config.Platform;
 import mc.config.UserProfile;
 import mc.config.Config.OS;
 import mc.constants.GeneralConstants;
 import mc.gui.LoginHandler;
 import mc.utils.Logger;
+import mc.utils.MiscUtils;
 
 public class Main {
 	
+	public LoginHandler loginHandler;
+	
 	public static void main(String[] args){
-		login();
 		detectAndSetOS();
 		setupSystemSpecificConstants();
+		login();
 		initFilesAndFolders();
 		Controller controller = new Controller();
 		controller.start();
@@ -20,7 +24,8 @@ public class Main {
 
 	private static void login() {
 		String username = System.getProperty("user.name");
-		boolean authResult = LoginHandler.doLogin(username);
+		LoginHandler loginHandler = new LoginHandler(MiscUtils.instantiate(Platform.getInstance().getClassAuthHandler()));
+		boolean authResult = loginHandler.doLogin(username);
 		if(!authResult){
 			System.exit(1);
 		}

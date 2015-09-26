@@ -25,4 +25,12 @@ public class MiscUtils {
 		}
 	}
 	
+	public static <T> T instantiate(Class<T> clazz) {
+		try {
+			return clazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			return null;
+		}
+	}
+	
 }

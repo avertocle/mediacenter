@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import mc.config.Config;
-import mc.config.Config.OS;
+import mc.config.Platform;
 import mc.config.UserProfile;
 import mc.constants.GeneralConstants;
 import mc.constants.GeneralConstants.MediaType;
@@ -15,8 +14,6 @@ import mc.event.a2g.RootEventA2G.EventTypeA2G;
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2c.RootEventG2C.EventTypeG2C;
 import mc.explorer.MediaFinder;
-import mc.explorer.MediaFinderLinux;
-import mc.explorer.MediaFinderWindows;
 import mc.gui.GuiController;
 import mc.model.LibraryTracker;
 import mc.model.media.Media;
@@ -30,9 +27,8 @@ import mc.model.translater.GuiTranslaterVideo;
 import mc.model.translater.GuiTranslator;
 import mc.model.video.LocalVideoInfoFetcher;
 import mc.playback.PlaybackHandler;
-import mc.playback.PlaybackHandlerLinux;
-import mc.playback.PlaybackHandlerWindows;
 import mc.utils.Logger;
+import mc.utils.MiscUtils;
 
 public class Controller extends Thread {
 
@@ -234,29 +230,9 @@ public class Controller extends Thread {
 	}
 	
 	private void initializePlatformDependentHandlers(){
-		OS os = Config.getInstance().getCurrentOS();
-		
-		switch(os) {
-		case Windows:
-		{
-			playbackHandler = new PlaybackHandlerWindows();
-			mediaFinder = new MediaFinderWindows();
-			break;
-		}
-		case Linux:
-		{
-			playbackHandler = new PlaybackHandlerLinux();
-			mediaFinder = new MediaFinderLinux();
-			break;
-		}
-		case Mac:
-			break;
-		case Unknown:
-			break;
-		default:
-			break;
-			
-		}
+		Platform platform = Platform.getInstance();
+		playbackHandler = MiscUtils.instantiate(platform.getClassPlaybackHandler());
+		mediaFinder = MiscUtils.instantiate(platform.getClassMediaFinder());
 	}
 	
 
