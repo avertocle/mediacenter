@@ -24,7 +24,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.proptiger.Main</mainClass>
+							<mainClass>mc.engine.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
