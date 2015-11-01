@@ -2,7 +2,7 @@ package mc.gui.library;
 
 import javax.swing.table.DefaultTableModel;
 
-public class TableModelCollections extends DefaultTableModel {
+public class TableModelCollection extends DefaultTableModel {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -11,7 +11,7 @@ public class TableModelCollections extends DefaultTableModel {
 	public static final int colNumCollection= 0;
 	public static final int colNumUse = 1;
 	
-	public TableModelCollections() {
+	public TableModelCollection() {
 		super(colnames, 0);
 	}
 	

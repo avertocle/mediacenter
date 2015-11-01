@@ -1,6 +1,7 @@
 package mc.gui;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import mc.event.a2g.RootEventA2G;
@@ -133,7 +134,7 @@ public class GuiController extends Thread {
 		case Resp_GetDirList:
 		{
 			@SuppressWarnings("unchecked")
-			List<String> dirList = (List<String>)(a2ge.getData());
+			Map<String, List<String>> dirList = (Map<String, List<String>>)(a2ge.getData());
 			mainPageGUI.showConsole_manageLibrary(dirList);
 			break;
 		}

@@ -2,7 +2,7 @@ package mc.event.a2g;
 
 public class RootEventA2G {
 
-	public static enum EventTypeA2G {GuiStart, GuiReloadLibrary, GuiAddMedia, GuiStop, GuiRemoveMedia, Resp_GetDirList};
+	public static enum EventTypeA2G {GuiStart, GuiReloadLibrary, GuiAddMedia, GuiStop, GuiRemoveMedia, Resp_GetDirList, GuiMessage};
 	
 	private EventTypeA2G type;
 	private Object data;

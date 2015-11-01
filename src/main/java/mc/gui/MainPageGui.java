@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JFrame;
@@ -89,7 +90,7 @@ public class MainPageGui {
 
 	}
 	
-	public void showConsole_manageLibrary(final List<String> dirList) {
+	public void showConsole_manageLibrary(final Map<String, List<String>> dirList) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if(dialogLibrary.isShowing()){

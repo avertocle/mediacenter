@@ -1,8 +1,8 @@
 package mc.engine;
 
+import mc.collection.UserProfile;
 import mc.config.Config;
 import mc.config.Platform;
-import mc.config.UserProfile;
 import mc.config.Config.OS;
 import mc.constants.GeneralConstants;
 import mc.gui.LoginHandler;
@@ -25,10 +25,10 @@ public class Main {
 	private static void login() {
 		String username = System.getProperty("user.name");
 		LoginHandler loginHandler = new LoginHandler(MiscUtils.instantiate(Platform.getInstance().getClassAuthHandler()));
-		boolean authResult = loginHandler.doLogin(username);
-		if(!authResult){
-			System.exit(1);
-		}
+//		boolean authResult = loginHandler.doLogin(username);
+//		if(!authResult){
+//			System.exit(1);
+//		}
 	}
 
 	private static void setupSystemSpecificConstants(){
@@ -53,8 +53,7 @@ public class Main {
 	
 	private static void initFilesAndFolders() {
 		try{
-			UserProfile.getInstance().makeConfigFilesAndDirectories();
-			UserProfile.getInstance().loadUserCollectionList();
+			UserProfile.makeConfigFilesAndDirectories();
 		}
 		catch(Exception ex){
 			Logger.logMajorEvent("Error loading config");

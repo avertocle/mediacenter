@@ -9,13 +9,13 @@ import javax.swing.table.TableCellRenderer;
 
 import mc.gui.ColorConsts;
 
-public class TableCollections extends JTable {
+public class TableCollection extends JTable {
 
 	private static final long serialVersionUID = 1L;
 
-	TableModelCollections tmodel;
+	TableModelCollection tmodel;
 
-	public TableCollections(TableModelCollections tmodel) {
+	public TableCollection(TableModelCollection tmodel) {
 		super(tmodel);
 		this.tmodel = tmodel;
 		setTableProperties();
@@ -34,8 +34,8 @@ public class TableCollections extends JTable {
 		this.setForeground(ColorConsts.Table_Collections.clrFg);
 		this.setFont(ColorConsts.Table_Collections.font);
 
-		fixColumnWidth(TableModelCollections.colNumCollection, 330);
-		fixColumnWidth(TableModelCollections.colNumUse, 35);
+		fixColumnWidth(TableModelCollection.colNumCollection, 330);
+		fixColumnWidth(TableModelCollection.colNumUse, 35);
 	}
 
 	private void fixColumnWidth(int colNo, int width) {

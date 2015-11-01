@@ -1,12 +1,17 @@
 package mc.gui.library;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+
 import mc.event.g2c.RootEventG2C;
 import mc.event.g2g.RootEventG2G;
 
@@ -16,7 +21,7 @@ public class DialogLibrary extends JDialog {
 
 	private ConcurrentLinkedQueue<RootEventG2C> gcToPc;
 	private ConcurrentLinkedQueue<RootEventG2G> guiInternalQueue;
-	private PanelLibrary panelLibrary;
+	private PanelCollectionMgmt panelCollectionMgmt;
 	private JFrame parentframe;
 
 	public DialogLibrary(ConcurrentLinkedQueue<RootEventG2C> gcToPc,
@@ -27,11 +32,12 @@ public class DialogLibrary extends JDialog {
 		makeUIElements();
 	}
 
-	public void showDialog(List<String> dirList) {
-		panelLibrary.refresh(dirList);
-		panelLibrary.revalidate();
-		this.setSize(new Dimension(400, 300));
-		this.getContentPane().add(new JScrollPane(panelLibrary));
+	public void showDialog(Map<String, List<String>> collectionMap) {
+		List<PanelCollection> panelCollections = getPanelsFromMap(collectionMap);
+		panelCollectionMgmt.refresh(panelCollections);
+		
+		this.setSize(new Dimension(800, 500));
+		this.getContentPane().add(new JScrollPane(panelCollectionMgmt));
 		if (parentframe != null) {
 			this.setLocationRelativeTo(parentframe);
 		}
@@ -41,13 +47,25 @@ public class DialogLibrary extends JDialog {
 		this.setVisible(true);
 	}
 
-	public void refreshDialog(List<String> dirList) {
-		panelLibrary.refresh(dirList);
-		panelLibrary.revalidate();
+	public void refreshDialog(Map<String, List<String>> collectionMap) {
+		List<PanelCollection> panelCollections = getPanelsFromMap(collectionMap);
+		panelCollectionMgmt.refresh(panelCollections);
+	}
+	
+	public List<PanelCollection> getPanelsFromMap(Map<String, List<String>> collectionMap){
+		PanelCollection panelCollection;
+		List<PanelCollection> panelCollections = new ArrayList<>();
+		for(Entry<String, List<String>> entry : collectionMap.entrySet()){
+			panelCollection = new PanelCollection(gcToPc, guiInternalQueue, entry.getKey());
+			panelCollection.refresh(entry.getValue());
+			panelCollections.add(panelCollection);
+		}
+		return panelCollections;
 	}
 
 	private void makeUIElements() {
-		panelLibrary = new PanelLibrary(gcToPc, guiInternalQueue);
+		panelCollectionMgmt = new PanelCollectionMgmt(gcToPc, guiInternalQueue);
+		panelCollectionMgmt.setBackground(Color.pink);
 	}
 
 //	public static void main(String args[]) {
