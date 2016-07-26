@@ -25,10 +25,10 @@ public class Main {
 	private static void login() {
 		String username = System.getProperty("user.name");
 		LoginHandler loginHandler = new LoginHandler(MiscUtils.instantiate(Platform.getInstance().getClassAuthHandler()));
-//		boolean authResult = loginHandler.doLogin(username);
-//		if(!authResult){
-//			System.exit(1);
-//		}
+		boolean authResult = loginHandler.doLogin(username);
+		if(!authResult){
+			System.exit(1);
+		}
 	}
 
 	private static void setupSystemSpecificConstants(){
